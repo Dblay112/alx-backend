@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """interpreter used"""
-
-from typing import Tuple
 import csv
 import math
 from typing import List, Tuple, Dict
 
 
-def index_range(page: int, page_size: int) -> Tuple[int, int]:
+def index_range(page: int, page_size: int) -> Tuple:
     """
     Return a tuple of size two containing a start
     index and an end index corresponding to the range of indexes.
@@ -17,9 +15,9 @@ def index_range(page: int, page_size: int) -> Tuple[int, int]:
     Returns:
     A tuple containing the start and end index for the current page.
     """
-    data = 19419
     s_index = (page - 1) * page_size
-    e_index = min(s_index + page_size, data)
+    e_index = s_index + page_size
+
     return s_index, e_index
 
 
@@ -38,7 +36,7 @@ class Server:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
                 dataset = [row for row in reader]
-            self.__dataset = dataset[1:]
+                self.__dataset = dataset[1:]
 
         return self.__dataset
 
@@ -53,6 +51,7 @@ class Server:
         """
         assert isinstance(page, int) and page > 0
         assert isinstance(page_size, int) and page_size > 0
+
         start, end = index_range(page, page_size)
         data = self.dataset()
 
@@ -68,10 +67,10 @@ class Server:
         and returns a dictionary 
         containing the following key-value pairs:
         """
-        new_data = self.get_page(page, page_size)
+        data = self.get_page(page, page_size)
         total_pages = math.ceil(len(self.dataset()) / page_size)
 
-        hyper_data = {
+        hypermedia = {
             "page_size": len(data),
             "page": page,
             "data": data,
@@ -80,4 +79,4 @@ class Server:
             "total_pages": total_pages
         }
 
-        return hyper_data
+        return hypermedia
