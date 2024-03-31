@@ -43,21 +43,19 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-    """Paginate the dataset correctly and return the appropriate page.
-
-    Args:
-      page (int, optional): Page number.
-      page_size (int, optional): Total page size.
-
-    Returns:
-      List[List]: The appropriate page of the dataset.
-    """
-    assert isinstance(page, int) and page > 0
-    assert isinstance(page_size, int) and page_size > 0
-
-    data_len = len(self.dataset())
-    if page > data_len or page_size > data_len:
-      return []
-
-    start_index, end_index = self.index_range(page, page_size)
-    return self.dataset()[start_index:end_index]
+        """
+        Paginate the dataset correctly and return the appropriate page.
+        Args:
+        page (int, optional): Page number.
+        page_size (int, optional): Total page size.
+        Returns:
+        List[List]: The appropriate page of the dataset
+        """
+        assert isinstance(page, int) and page > 0
+        assert isinstance(page_size, int) and page_size > 0
+        
+        data_len = len(self.dataset())
+        if page > data_len or page_size > data_len:
+            return []
+            start_index, end_index = self.index_range(page, page_size)
+            return self.dataset()[start_index:end_index]
