@@ -1,32 +1,58 @@
 #!/usr/bin/env python3
-"""I prefer interpreter being used here"""
-from typing import Dict, List, String, Number, Any
+"""interpreter used"""
+
+from typing import Tuple
+import csv
 import math
+from typing import List
 
 
-def hyper(page: int = 1, page_size: int = 10) -> Dict[str, Any]:
-    """Returns a dictionary containing hypermedia information."""
-    data = get_page(page, page_size)
-    data_len = len(data)
-    total_pages = math.ceil(len(dataset()) / page_size)
-    next_page = page + 1 if page < total_pages else None
-    prev_page = page - 1 if page > 1 else None
-    return {
-        'page_size': page_size,
-        'page': page,
-        'data': data,
-        'next_page': next_page,
-        'prev_page': prev_page,
-        'total_pages': total_pages
-    }
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
+    """
+    Return a tuple of size two containing a start
+    index and an end index corresponding to the range of indexes.
+    Args:
+    page: Current page number.
+    page_size: Items per page number.
+    Returns:
+    A tuple containing the start and end index for the current page.
+    """
+    data = 19419
+    s_index = (page - 1) * page_size
+    e_index = min(s_index + page_size, data)
+    return s_index, e_index
 
-def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+
+class Server:
+    """Server class to paginate a database of popular baby names.
+    """
+    DATA_FILE = "Popular_Baby_Names.csv"
+
+    def __init__(self):
+        self.__dataset = None
+
+    def dataset(self) -> List[List]:
+        """Cached dataset
         """
-        Method to get a page
+        if self.__dataset is None:
+            with open(self.DATA_FILE) as f:
+                reader = csv.reader(f)
+                dataset = [row for row in reader]
+            self.__dataset = dataset[1:]
+
+        return self.__dataset
+
+    def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
+        """
+        Paginate the dataset correctly and return the appropriate page.
+        Args:
+        page (int, optional): Page number.
+        page_size (int, optional): Total page size.
+        Returns:
+        List[List]: The appropriate page of the dataset
         """
         assert isinstance(page, int) and page > 0
         assert isinstance(page_size, int) and page_size > 0
-
         start, end = index_range(page, page_size)
         data = self.dataset()
 
@@ -34,3 +60,24 @@ def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
             return []
 
         return data[start:end]
+
+    def hyper(self, page: int = 1, page_size: int = 10) -> Dict[str, Any]:
+        """function that takes the same
+        arguments (and defaults) as get_page
+        and returns a dictionary 
+        containing the following key-value pairs:
+        """
+        data = self.get_page(page, page_size)
+        total_pages = math.ceil(len(self.dataset()) / page_size)
+
+        media_data = {
+            "page_size": len(data),
+            "page": page,
+            "data": data,
+            "next_page": page + 1 if page + 1 <= total_pages else None,
+            "prev_page": page - 1 if page > 1 else None,
+            "total_pages": total_pages
+        }
+
+        return media_data
+    
