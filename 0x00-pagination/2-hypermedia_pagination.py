@@ -61,16 +61,17 @@ class Server:
 
         return data[start:end]
 
-    def hyper(self, page: int = 1, page_size: int = 10) -> Dict[str, Any]:
-        """function that takes the same
+    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+        """
+        function that takes the same
         arguments (and defaults) as get_page
         and returns a dictionary 
         containing the following key-value pairs:
         """
-        data = self.get_page(page, page_size)
+        new_data = self.get_page(page, page_size)
         total_pages = math.ceil(len(self.dataset()) / page_size)
 
-        media_data = {
+        hyper_data = {
             "page_size": len(data),
             "page": page,
             "data": data,
@@ -79,5 +80,4 @@ class Server:
             "total_pages": total_pages
         }
 
-        return media_data
-    
+        return hyper_data
