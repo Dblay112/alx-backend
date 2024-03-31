@@ -64,7 +64,7 @@ class Server:
         """
         function that takes the same
         arguments (and defaults) as get_page
-        and returns a dictionary 
+        and returns a dictionary
         containing the following key-value pairs:
         """
         data = self.get_page(page, page_size)
