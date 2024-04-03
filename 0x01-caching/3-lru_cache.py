@@ -20,13 +20,10 @@ class LRUCache(BaseCaching):
             print("DISCARD: {}".format(self.lru[0]))
             del self.cache_data[self.lru[0]]
             self.cache_data.popitem(last=False)
-            
         try:
             self.lru.remove(key)
-        
         except ValueError:
             pass
-            
         self.lru.append(key)
         
     def get(self,key):
