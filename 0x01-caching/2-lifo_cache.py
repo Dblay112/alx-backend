@@ -2,7 +2,7 @@
 """Cache Module
 """
 from collections import deque
-from base_caching import BaseCaching
+BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LIFOCache(BaseCaching):
@@ -17,18 +17,22 @@ class LIFOCache(BaseCaching):
         self.lifo = deque()
 
     def put(self, key, item):
-        if key is None or item is None:
+      if key is None or item is None:
             return
 
         self.cache_data[key] = item
 
-        # Check if cache is full
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            discarded_key = self.lifo.pop()
-            print("DISCARD: {}".format(discarded_key))
-            del self.cache_data[discarded_key]
+            print("DISCARD: {}".format(self.lifo[-1]))
+            del self.cache_data[self.lifo[-1]]
+            self.lifo.pop()
 
-        # Update LIFO queue
+        try:
+            self.lifo.remove(key)
+
+        except ValueError:
+            pass
+
         self.lifo.append(key)
 
     def get(self, key):
