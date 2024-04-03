@@ -24,7 +24,7 @@ class LRUCache(BaseCaching):
             del self.cache_data[self.lru.popitem(False)[0]]
 
         try:
-            self.lru.remove(key)
+            del self.lru[key]
         except ValueError:
             pass
 
