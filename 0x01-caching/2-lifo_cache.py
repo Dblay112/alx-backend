@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""Cache Module
+"""
+from collections import deque
+from base_caching import BaseCaching
+
+
+class LIFOCache(BaseCaching):
+    """
+    LIFO class for caching system
+    """
+    def __init__(self):
+        """
+        Initialize
+        """
+        super().__init__()
+        self.lifo = deque()
+
+    def put(self, key, item):
+        if key is None or item is None:
+            return
+
+        self.cache_data[key] = item
+
+        # Check if cache is full
+        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
+            discarded_key = self.lifo.pop()
+            print("DISCARD: {}".format(discarded_key))
+            del self.cache_data[discarded_key]
+
+        # Update LIFO queue
+        self.lifo.append(key)
+
+    def get(self, key):
+        """
+        Get an item by key
+        """
+        return self.cache_data.get(key)
