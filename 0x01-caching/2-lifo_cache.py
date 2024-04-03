@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Cache Module
+"""
+LIFOCache module
 """
 from collections import deque
 BaseCaching = __import__('base_caching').BaseCaching
@@ -11,13 +12,16 @@ class LIFOCache(BaseCaching):
     """
     def __init__(self):
         """
-        Initialize
+        Initialization of LIFOCache class
         """
         super().__init__()
         self.lifo = deque()
 
     def put(self, key, item):
-      if key is None or item is None:
+        """
+        Add an item in the cache
+        """
+        if key is None or item is None:
             return
 
         self.cache_data[key] = item
