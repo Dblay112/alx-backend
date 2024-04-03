@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """base class for caching"""
-from base_caching import BaseCaching
+BaseCaching = __import__('base_caching').BaseCaching
 
 
-class BasicCache(Basecaching):
+class BasicCache(BaseCaching):
     """a class BasicCache that inherits from BaseCaching"""
     def put(self, key, item):
         """method to add an item to the cache"""
