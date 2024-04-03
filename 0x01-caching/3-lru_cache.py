@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-LIFOCache module
+LFU Cache module
 """
 from collections import deque
 BaseCaching = __import__('base_caching').BaseCaching
@@ -18,7 +18,7 @@ class Node:
 
 class List:
     """
-    method (Doubly Linked list)
+    Doubly Linked list
     """
     def __init__(self):
         self.head = None
@@ -26,7 +26,7 @@ class List:
 
     def insert_front(self, value):
         """
-        method to insert data in the front of the list
+        Insert data in the front of the list
         """
         new_node = Node(value)
         new_node.next = self.head
@@ -41,7 +41,7 @@ class List:
 
     def insert_end(self, value):
         """
-        method to insert data at the end of the list
+        Insert data at the end of the list
         """
         new_node = Node(value)
         new_node.prev = self.tail
@@ -56,7 +56,7 @@ class List:
 
     def pop_front(self):
         """
-        method to remove data from the front of the list
+        Remove data from the front of the list
         """
         if self.head is None:
             return
@@ -94,13 +94,13 @@ class List:
 
     def back(self):
         """
-        Returns the tail of the list
+        Return the tail of the list
         """
         return self.tail
 
     def erase(self, node):
         """
-        remove a node from the list
+        Erase a node from the list
         """
         if node is None:
             return
@@ -126,7 +126,7 @@ class LRUCache(BaseCaching):
     """
     def __init__(self):
         """
-        Initialization of LRUCache class"""
+        Initialize
         """
         super().__init__()
         self.order = List()
@@ -140,7 +140,7 @@ class LRUCache(BaseCaching):
 
     def put(self, key, item):
         """
-        method to add an item in the cache
+        Add an item in the cache
         """
         if key is None or item is None:
             return
