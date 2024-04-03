@@ -48,4 +48,3 @@ class FIFOCache(BaseCaching):
         Get an item by key
         """
         return self.cache_data.get(key)
-
