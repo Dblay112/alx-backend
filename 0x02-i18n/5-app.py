@@ -35,9 +35,10 @@ def get_user(login_as):
     """function that returns a user dictionary or None if
     the ID cannot be found or if login_as was not passed.
     """
-    if login_as is None:
-        return None
-    return users.get(login_as)
+    try:
+        return users.get(int(login_as))
+    except Exception:
+        return
 
 @app.before_request
 def before_request():
