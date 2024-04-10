@@ -32,7 +32,8 @@ users = {
 
 
 def get_user(login_as):
-    """function that returns a user dictionary or None if
+    """
+    function that returns a user dictionary or None if
     the ID cannot be found or if login_as was not passed.
     """
     try:
@@ -44,9 +45,10 @@ def get_user(login_as):
 @app.before_request
 def before_request():
     """
-    function and use the app.before_request decorator to make it be
-    executed before all other functions. before_request should use get_user
-    to find a user if any, and set it as a global on flask.g.user.
+    function and use the app.before_request decorator
+    to make it be executed before all other functions
+    before_request should use get_user to find a user if any,
+    and set it as a global on flask.g.user.
     """
     g.user = get_user(request.args.get("login_as"))
 
