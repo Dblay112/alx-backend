@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""flask module"""
-from flask import Flask, render_template, request
+"""
+flask module
+"""
+
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -10,4 +13,4 @@ def index():
     """
     hello world
     """
-    return render_template('index.html')
+    return render_template('0-index.html')
