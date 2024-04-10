@@ -39,6 +39,14 @@ def get_user(login_as):
         return None
     return users.get(login_as)
 
+@app.before_request
+def before_request():
+    """
+    function and use the app.before_request decorator to make it be
+    executed before all other functions. before_request should use get_user
+    to find a user if any, and set it as a global on flask.g.user.
+    """
+    g.request = get_user(request.args.get("login_as"))
 
 @app.route('/', methods=['GET'], strict_slashes=False)
 def index():
