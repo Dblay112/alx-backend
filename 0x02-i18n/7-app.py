@@ -1,31 +1,12 @@
 #!/usr/bin/env python3
 """
-Use user locale
+A Basic flask Application
 """
-
-from crypt import methods
-from email import header
-import babel
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-import pytz
-import requests
-
-app = Flask(__name__)
-babel = Babel(app)
 
 
-class Config:
-    """
-    Config class
-    """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
-
-
-app.config.from_object(Config)
-
+# Mock user data
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
@@ -34,72 +15,101 @@ users = {
 }
 
 
-def get_user(login_as):
+class Config:
     """
-    get_user
+    Application configuration class
     """
-    try:
-        return users.get(int(login_as))
-    except Exception:
-        return
+    LANGUAGES = ["en", "fr", "am"]
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
+
+
+# Instantiate the application object
+app = Flask(__name__)
+app.config.from_object(Config)
+
+
+# Wrap the application with Babel
+babel = Babel(app)
+
+
+def get_user(user_id):
+    """
+    Get user by user_id
+    """
+    return users.get(user_id)
 
 
 @app.before_request
 def before_request():
     """
-    before request
+    Adds valid user to the global session `g`.
     """
-    g.user = get_user(request.args.get("login_as"))
+    user_id = request.args.get('login_as')
 
-
-@babel.localeselector
-def get_locale():
-    """
-    get_locale method
-    """
-    locale = request.args.get("locale")
-    if locale:
-        return locale
-    user = request.args.get('login_as')
-    if user:
-        lang = user.get(int(user)).get('locale')
-        if lang in app.config['LANGUAGES']:
-            return lang
-    headers = request.headers.get('locale')
-    if headers:
-        return headers
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    if user_id:
+        g.user = get_user(int(user_id))
+    else:
+        g.user = None
 
 
 @babel.timezoneselector
 def get_timezone():
     """
-    get_timezone method
+    Returns the best match timezone.
     """
-    try:
-        timezone = request.args.get("timezone")
-        if timezone:
-            return pytz.timezone(timezone)
-        user = request.args.get("login_as")
-        if user:
-            timezone = users.get(int(user)).get('timezone')
-            if timezone:
-                return pytz.timezone(timezone)
-        timezone = request.headers.get("timezone")
-        if timezone:
-            return pytz.timezone(timezone)
-    except pytz.UnknownTimeZoneError:
-        return app.config.get('BABEL_DEFAULT_TIMEZONE')
-    return app.config.get('BABEL_DEFAULT_TIMEZONE')
+    timezone = request.args.get('timezone')
+    user = g.user
+
+    if timezone:
+        try:
+            # Validate timezone
+            pytz.timezone(timezone)
+            return timezone
+
+        except pytz.UnknownTimeZoneError:
+            pass
+
+    if user and user['timezone']:
+        try:
+            # Validate timezone
+            pytz.timezone(user['timezone'])
+            return user['timezone']
+
+        except pytz.UnknownTimeZoneError:
+            pass
+
+    return app.config['BABEL_DEFAULT_TIMEZONE']
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def index():
+@babel.localeselector
+def get_locale():
     """
-    hello method
+    Returns best match locale language.
+    """
+    locale = request.args.get('locale')
+    user = g.user
+    header_locale = request.headers.get('Accept-Language')
+
+    if locale and locale in app.config['LANGUAGES']:
+        return locale
+
+    if user and user['locale'] in app.config['LANGUAGES']:
+        return user['locale']
+
+    if header_locale and header_locale in app.config['LANGUAGES']:
+        return header_locale
+
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
+@app.route("/")
+def hello_world():
+    """
+    Render a basic html page.
     """
     return render_template('7-index.html')
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run()
