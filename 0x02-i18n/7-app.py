@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Babel module
+Use user locale
 """
 
 from crypt import methods
@@ -19,13 +19,12 @@ class Config:
     """
     Config class
     """
-    LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
 app.config.from_object(Config)
-
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -37,8 +36,7 @@ users = {
 
 def get_user(login_as):
     """
-    function that returns a user dictionary or None if
-    the ID cannot be found or if login_as was not passed.
+    get_user
     """
     try:
         return users.get(int(login_as))
@@ -49,36 +47,25 @@ def get_user(login_as):
 @app.before_request
 def before_request():
     """
-    function and use the app.before_request decorator
-    to make it be executed before all other functions
-    before_request should use get_user to find a user if any,
-    and set it as a global on flask.g.user.
+    before request
     """
     g.user = get_user(request.args.get("login_as"))
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def index():
-    """
-    hello world
-    """
-    return render_template('1-index.html')
-
-
 @babel.localeselector
 def get_locale():
-    """method to determine the best
-    match with our supported languages.
+    """
+    get_locale method
     """
     locale = request.args.get("locale")
     if locale:
         return locale
-    user = request.args.get("login_as")
+    user = request.args.get('login_as')
     if user:
-        lang = users.get(int(user)).get('locale')
+        lang = user.get(int(user)).get('locale')
         if lang in app.config['LANGUAGES']:
             return lang
-    headers = request.headers.get("locale")
+    headers = request.headers.get('locale')
     if headers:
         return headers
     return request.accept_languages.best_match(app.config['LANGUAGES'])
@@ -87,7 +74,7 @@ def get_locale():
 @babel.timezoneselector
 def get_timezone():
     """
-    get_timezone.
+    get_timezone method
     """
     try:
         timezone = request.args.get("timezone")
@@ -106,5 +93,13 @@ def get_timezone():
     return app.config.get('BABEL_DEFAULT_TIMEZONE')
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+@app.route('/', methods=['GET'], strict_slashes=False)
+def index():
+    """
+    hello method
+    """
+    return render_template('7-index.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
